@@ -65,73 +65,99 @@ window.onload = function() {
     addTodo.append(input);
     addTodo.append(addButton);
  
-    app.prepend(addTodo);
 
     const sortData=()=>{
       data.sort((a, b) => (a.title > b.title) ? 1 : -1)
  
       data.forEach((data , i)=>{
-         data.id= i+1;
+         data.id= i;
           //console.log(data);
       })  
     }
    //testing gitgraph
    
- 
-
-    const renderData = ()=>{
-        data.forEach((elem, i)=>{
-            //console.log(elem);
-
-            //Creo el div que contiene cada elemento
-            let divElement = document.createElement("div"); 
-            divElement.classList.add("w-50", "d-flex", "p-4", "d-flex", "justify-content-between", "todo");
-            divElement.id = i;
-            let spanTodo = document.createElement("span");
-
-            //Crear los botones
-            let buttonEdit = document.createElement("button");
-            let buttonDelete = document.createElement("button");
-
-            //Añado clases de bootstrap
-            buttonEdit.classList.add("btn", "btn-outline-warning", "ml-4", "editButton");
-            buttonEdit.innerHTML="edit";
-            buttonDelete.classList.add("btn", "btn-outline-danger","btn-sm", "ml-4", "deleteButton");
-            buttonDelete.innerHTML="del";
-
-            //Añado atributos
-            buttonEdit.setAttribute("type", "button");
-            buttonDelete.setAttribute("type", "button");
+   const renderData = () => {
+    app.innerHTML = data.reduce((HTMLString, dataItem) => HTMLString += `
+        <div id="${dataItem.id}" class="element d-flex w-50 p-4 justify-content-between">
            
-            spanTodo.innerHTML=elem.title;
-            divElement.append(spanTodo);
+            <span class="todoTitle">${dataItem.title}</span>
+            <button class="deleteButton btn btn-outline-danger btn-sm">del</button>
+            <button class="editButton btn btn-outline-warning btn-sm">edit</button>
+        </div>
+    `, "");
+    app.prepend(addTodo);
+    initDataEvents();
+  };
 
-            divElement.appendChild(buttonDelete);
-            divElement.appendChild(buttonEdit);
-
-            app.append(divElement);
-                 //sort data
-        })
-    }
-
-    const inputForEditing = ()=>{
-      let spans = document.querySelectorAll("span");
-      let allTodos= document.querySelectorAll("todo");
-      spans.forEach((span,i)=>{
-        console.log("wowow");
-        span.addEventListener("click", (e)=>{
-          
+  const initDataEvents = () => {
+    const todoTitle = document.querySelectorAll('.todoTitle');
+    todoTitle.forEach(element => {
+      element.addEventListener('click', (e) => {
           let p = e.target.parentElement;
           let idx = p.id;
-          p.prepend(editInput);
+          console.log(idx);
+          p.append(editInput);
           e.target.style.display= "none";
-
+        
           //allTodos[idx].append(editInput);
           editInput.setAttribute("placeholder", data[idx].title);
-          //span.style.display= "flex";
-        });
-      });
-    }
+      })
+    })
+  };
+
+    // const renderData = ()=>{
+    //     data.forEach((elem, i)=>{
+    //         //console.log(elem);
+
+    //         //Creo el div que contiene cada elemento
+    //         let divElement = document.createElement("div"); 
+    //         divElement.classList.add("w-50", "d-flex", "p-4", "d-flex", "justify-content-between", "todo");
+    //         divElement.id = i;
+    //         let spanTodo = document.createElement("span");
+
+    //         //Crear los botones
+    //         let buttonEdit = document.createElement("button");
+    //         let buttonDelete = document.createElement("button");
+
+    //         //Añado clases de bootstrap
+    //         buttonEdit.classList.add("btn", "btn-outline-warning", "ml-4", "editButton");
+    //         buttonEdit.innerHTML="edit";
+    //         buttonDelete.classList.add("btn", "btn-outline-danger","btn-sm", "ml-4", "deleteButton");
+    //         buttonDelete.innerHTML="del";
+
+    //         //Añado atributos
+    //         buttonEdit.setAttribute("type", "button");
+    //         buttonDelete.setAttribute("type", "button");
+           
+    //         spanTodo.innerHTML=elem.title;
+    //         divElement.append(spanTodo);
+
+    //         divElement.appendChild(buttonDelete);
+    //         divElement.appendChild(buttonEdit);
+
+    //         app.append(divElement);
+    //              //sort data
+    //     })
+    // }
+
+    // const inputForEditing = ()=>{
+    //   let spans = document.querySelectorAll("span");
+    //   let allTodos= document.querySelectorAll("todo");
+    //   spans.forEach((span,i)=>{
+    //     console.log("wowow");
+    //     span.addEventListener("click", (e)=>{
+          
+    //       let p = e.target.parentElement;
+    //       let idx = p.id;
+    //       p.prepend(editInput);
+    //       e.target.style.display= "none";
+
+    //       //allTodos[idx].append(editInput);
+    //       editInput.setAttribute("placeholder", data[idx].title);
+    //       //span.style.display= "flex";
+    //     });
+    //   });
+    // }
 
     /**
      *  //CLICKING BUTTONS
@@ -142,15 +168,25 @@ window.onload = function() {
       deleteButton = document.querySelectorAll(".deleteButton");
   
       deleteButton.forEach((elem,i)=> {
-        //console.log(elem);
-        elem.addEventListener("click", deleteElement);
+      
+        elem.addEventListener("click", (e)=>{
+          let p = e.target.parentElement;
+          let idx = p.id;
+          //console.log(idx);
+          deleteElement(idx);
+        });
       });
+
         //ADD THE LISTENER TO THE EDIT BUTTONS
         editButton = document.querySelectorAll(".editButton");
   
         editButton.forEach((elem,i)=> {
-        //console.log(elem);
-        elem.addEventListener("click", editElement);
+        
+        elem.addEventListener("click", (e)=>{
+          let p = e.target.parentElement;
+          let idx = p.id;
+          editElement(idx);
+        });
       });
      }
 
@@ -171,8 +207,6 @@ window.onload = function() {
       sortData();
       //
       input.value = null;
-      //app.querySelectorAll(".todo").forEach(n =>n.remove());
-
       renderData();
       buttonsClick();
     }; //END ADDELEMENT
@@ -181,11 +215,11 @@ window.onload = function() {
      *  //DELETE ELEMENTSSSS
      */
   
-    const deleteElement = ()=>{
+    const deleteElement = (idx)=>{
       
-      console.log("hola");
+      console.log(idx);
+      data.splice(idx, 1);
       sortData();
-      app.querySelectorAll(".todo").forEach(n =>n.remove());
       renderData();
       buttonsClick();
      
@@ -195,10 +229,10 @@ window.onload = function() {
      *  //EDIT ELEMENTSSSS
      */
 
-    const editElement = ()=>{
+    const editElement = (idx)=>{
+
       console.log("editttt");
       sortData();
-      app.querySelectorAll(".todo").forEach(n =>n.remove());
       renderData();
       buttonsClick();
     };//END EDITELEMENT
@@ -209,7 +243,7 @@ window.onload = function() {
     sortData();
     renderData();
     buttonsClick();
-    inputForEditing();
+    //inputForEditing();
     addButton.addEventListener("click", addElement);
 
 
