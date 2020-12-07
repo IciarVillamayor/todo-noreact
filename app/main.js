@@ -184,13 +184,11 @@ window.onload = function() {
     const editElement = (idx)=>{
 
       let idd= Number(idx);
-      //console.log(editInput.value);
-      console.log(idd);
+      
       const curr = data.find(e => e.id === idd);
-      console.log(curr);
-      console.log(data[idd])
+     
       data.splice(idd, 1, {
-       
+        ...curr,
        title : editInput.value
       })
       console.log(data);
@@ -206,10 +204,3 @@ window.onload = function() {
     addButton.addEventListener("click", addElement);
 
 };
-
-  // const idx = arr.findIndex(e => e.id === payload.id);
-  // const curr = arr.find(e => e.id === payload.id);
-  // arr.splice(idx, 1, {
-  //     ...curr, 
-      
-  // });
