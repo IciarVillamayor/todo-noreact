@@ -79,8 +79,7 @@ window.onload = function() {
    const renderData = () => {
     app.innerHTML = data.reduce((HTMLString, dataItem) => HTMLString += `
         <div id="${dataItem.id}" class="element d-flex w-50 p-4 justify-content-between">
-           
-            <span class="todoTitle">${dataItem.title}</span>
+            <span id="todo_${dataItem.id}" class="todoTitle">${dataItem.title}</span>
             <button class="deleteButton btn btn-outline-danger btn-sm">del</button>
             <button class="editButton btn btn-outline-warning btn-sm">edit</button>
         </div>
@@ -91,73 +90,27 @@ window.onload = function() {
 
   const initDataEvents = () => {
     const todoTitle = document.querySelectorAll('.todoTitle');
+
     todoTitle.forEach(element => {
+      element.style.display="flex";
       element.addEventListener('click', (e) => {
           let p = e.target.parentElement;
           let idx = p.id;
-          console.log(idx);
-          p.append(editInput);
-          e.target.style.display= "none";
+         
+          p.prepend(editInput);
         
-          //allTodos[idx].append(editInput);
-          editInput.setAttribute("placeholder", data[idx].title);
+          for(i=0; i<todoTitle.length; i++){
+            todoTitle[i].style.display= "flex";
+          }
+
+          element.style.display= "none";
+          editInput.setAttribute("placeholder", element.innerHTML);
+          editInput.value = "";
+          console.log(data[idx].title);
       })
     })
+    
   };
-
-    // const renderData = ()=>{
-    //     data.forEach((elem, i)=>{
-    //         //console.log(elem);
-
-    //         //Creo el div que contiene cada elemento
-    //         let divElement = document.createElement("div"); 
-    //         divElement.classList.add("w-50", "d-flex", "p-4", "d-flex", "justify-content-between", "todo");
-    //         divElement.id = i;
-    //         let spanTodo = document.createElement("span");
-
-    //         //Crear los botones
-    //         let buttonEdit = document.createElement("button");
-    //         let buttonDelete = document.createElement("button");
-
-    //         //Añado clases de bootstrap
-    //         buttonEdit.classList.add("btn", "btn-outline-warning", "ml-4", "editButton");
-    //         buttonEdit.innerHTML="edit";
-    //         buttonDelete.classList.add("btn", "btn-outline-danger","btn-sm", "ml-4", "deleteButton");
-    //         buttonDelete.innerHTML="del";
-
-    //         //Añado atributos
-    //         buttonEdit.setAttribute("type", "button");
-    //         buttonDelete.setAttribute("type", "button");
-           
-    //         spanTodo.innerHTML=elem.title;
-    //         divElement.append(spanTodo);
-
-    //         divElement.appendChild(buttonDelete);
-    //         divElement.appendChild(buttonEdit);
-
-    //         app.append(divElement);
-    //              //sort data
-    //     })
-    // }
-
-    // const inputForEditing = ()=>{
-    //   let spans = document.querySelectorAll("span");
-    //   let allTodos= document.querySelectorAll("todo");
-    //   spans.forEach((span,i)=>{
-    //     console.log("wowow");
-    //     span.addEventListener("click", (e)=>{
-          
-    //       let p = e.target.parentElement;
-    //       let idx = p.id;
-    //       p.prepend(editInput);
-    //       e.target.style.display= "none";
-
-    //       //allTodos[idx].append(editInput);
-    //       editInput.setAttribute("placeholder", data[idx].title);
-    //       //span.style.display= "flex";
-    //     });
-    //   });
-    // }
 
     /**
      *  //CLICKING BUTTONS
@@ -222,7 +175,6 @@ window.onload = function() {
       sortData();
       renderData();
       buttonsClick();
-     
     };//END DELETEELEMENT
 
     /**
@@ -231,29 +183,28 @@ window.onload = function() {
 
     const editElement = (idx)=>{
 
+      let idd= Number(idx);
+      //console.log(editInput.value);
+      console.log(idd);
+      const curr = data.find(e => e.id === idd);
+      console.log(curr);
+      console.log(data[idd])
+      data.splice(idd, 1, {
+       
+       title : editInput.value
+      })
+      console.log(data);
       console.log("editttt");
       sortData();
       renderData();
       buttonsClick();
     };//END EDITELEMENT
 
-
-
-  
     sortData();
     renderData();
     buttonsClick();
-    //inputForEditing();
     addButton.addEventListener("click", addElement);
 
-
-
-    //document.querySelectorAll(".deleteButton").addEventListener("click", deleteElement);
-
-    
-
-
-    //deleteButton.addEventListener("click", deleteElement);
 };
 
   // const idx = arr.findIndex(e => e.id === payload.id);
