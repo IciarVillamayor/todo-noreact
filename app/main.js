@@ -1,5 +1,6 @@
 window.onload = function() {
-    let deleteButton
+    let deleteButton;
+    let editButton;
     console.log("hellowowowowo");
 
     let data = [
@@ -50,7 +51,8 @@ window.onload = function() {
 
     let input= document.createElement("input");
     input.classList.add("form-control", "w-100", "newTodo");
-
+    let editInput = document.createElement("input");
+    editInput.classList.add("form-control", "w-100", "editTodo");
     let spanTodo = document.createElement("span");
     let app= document.querySelector("#App");
 
@@ -73,8 +75,9 @@ window.onload = function() {
           //console.log(data);
       })  
     }
+   //testing gitgraph
    
-   
+ 
 
     const renderData = ()=>{
         data.forEach((elem, i)=>{
@@ -83,6 +86,7 @@ window.onload = function() {
             //Creo el div que contiene cada elemento
             let divElement = document.createElement("div"); 
             divElement.classList.add("w-50", "d-flex", "p-4", "d-flex", "justify-content-between", "todo");
+            divElement.id = i;
             let spanTodo = document.createElement("span");
 
             //Crear los botones
@@ -110,7 +114,50 @@ window.onload = function() {
         })
     }
 
+    const inputForEditing = ()=>{
+      let spans = document.querySelectorAll("span");
+      let allTodos= document.querySelectorAll("todo");
+      spans.forEach((span,i)=>{
+        console.log("wowow");
+        span.addEventListener("click", (e)=>{
+          
+          let p = e.target.parentElement;
+          let idx = p.id;
+          p.prepend(editInput);
+          e.target.style.display= "none";
 
+          //allTodos[idx].append(editInput);
+          editInput.setAttribute("placeholder", data[idx].title);
+          //span.style.display= "flex";
+        });
+      });
+    }
+
+    /**
+     *  //CLICKING BUTTONS
+     */
+
+    const buttonsClick = ()=>{
+      //ADD THE LISTENER TO THE DELETE BUTTONS
+      deleteButton = document.querySelectorAll(".deleteButton");
+  
+      deleteButton.forEach((elem,i)=> {
+        //console.log(elem);
+        elem.addEventListener("click", deleteElement);
+      });
+        //ADD THE LISTENER TO THE EDIT BUTTONS
+        editButton = document.querySelectorAll(".editButton");
+  
+        editButton.forEach((elem,i)=> {
+        //console.log(elem);
+        elem.addEventListener("click", editElement);
+      });
+     }
+
+    /**
+     *  //ADD ELEMENTSSSS
+     */
+   
     const addElement = ()=>{  
       //let superData= [...data];
       console.log(input.value);
@@ -124,62 +171,48 @@ window.onload = function() {
       sortData();
       //
       input.value = null;
-      app.querySelectorAll(".todo").forEach(n =>n.remove());
+      //app.querySelectorAll(".todo").forEach(n =>n.remove());
 
       renderData();
+      buttonsClick();
+    }; //END ADDELEMENT
 
-      //ADD THE LISTENER TO THE DELETE BUTTONS
-      deleteButton = document.querySelectorAll(".deleteButton");
-
-       deleteButton.forEach((elem,i)=> {
-        //console.log(elem);
-        elem.addEventListener("click", deleteElement);
-      });
-      
-      //ADD THE LISTENER TO THE EDIT BUTTONS
-
-    }
-
+    /**
+     *  //DELETE ELEMENTSSSS
+     */
   
-    const editElement = ()=>{
-      sortData();
-      app.querySelectorAll(".todo").forEach(n =>n.remove());
-      renderData();
-      
-    }
-
-    const deleteElement = (index)=>{
+    const deleteElement = ()=>{
       
       console.log("hola");
       sortData();
       app.querySelectorAll(".todo").forEach(n =>n.remove());
       renderData();
-      
-      //ADD THE LISTENER TO THE DELETE BUTTONS
-      deleteButton = document.querySelectorAll(".deleteButton");
+      buttonsClick();
+     
+    };//END DELETEELEMENT
 
-       deleteButton.forEach((elem,i)=> {
-        //console.log(elem);
-        elem.addEventListener("click", deleteElement);
-      });
-        //ADD THE LISTENER TO THE EDIT BUTTONS
+    /**
+     *  //EDIT ELEMENTSSSS
+     */
 
-    }
+    const editElement = ()=>{
+      console.log("editttt");
+      sortData();
+      app.querySelectorAll(".todo").forEach(n =>n.remove());
+      renderData();
+      buttonsClick();
+    };//END EDITELEMENT
 
-   
+
+
+  
     sortData();
     renderData();
-   
-    deleteButton = document.querySelectorAll(".deleteButton");
-
-       deleteButton.forEach((elem,i)=> {
-        //console.log(elem);
-        elem.addEventListener("click", deleteElement);
-      });
-
+    buttonsClick();
+    inputForEditing();
     addButton.addEventListener("click", addElement);
 
-   
+
 
     //document.querySelectorAll(".deleteButton").addEventListener("click", deleteElement);
 
